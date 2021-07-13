@@ -23,7 +23,7 @@
                     </a>
                 </li>
 
-                <li class="nav-header">ADMINISTRATOR</li>
+                {{-- <li class="nav-header">USER</li>
                 <li class="nav-item has-treeview">
                     <a href="" class="nav-link">
                         <i class="nav-icon fa fa-users"></i>
@@ -35,7 +35,7 @@
                         <i class="nav-icon fas fa-clipboard-list"></i>
                         <p>List of  Workloads</p>
                     </a>
-                </li>
+                </li> --}}
                 {{-- @if(Auth::user()->position == 4||Auth::user()->position == 5||Auth::user()->position == 1||Auth::user()->position == 2)
                     <li class="nav-header">PACKING AND SHIPPING</li>
                     <li class="nav-item">

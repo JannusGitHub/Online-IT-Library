@@ -1,20 +1,13 @@
-@php $layout = 'layouts.admin_layout'; @endphp
+@php $layout = 'layouts.user_layout'; @endphp
 @auth
     @php
         if(Auth::user()->user_level_id == 1){
-            $layout = 'layouts.admin_layout';
+        $layout = 'layouts.admin_layout';
         }
         else if(Auth::user()->user_level_id == 2){
-            $layout = 'layouts.user_layout';
+        $layout = 'layouts.user_layout';
         }
     @endphp
-    
-    {{-- if user's id is equal to 1 (Administrator) --}}
-    @if(Auth::user()->user_level_id != 2)
-        <script type="text/javascript">
-            window.location = "admin";
-        </script>
-    @endif
 @endauth
 
 @auth
@@ -28,12 +21,12 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>User</h1>
+                        <h1>Administrator</h1>
                     </div>
                     <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="">Dashboard</a></li>
-                            <li class="breadcrumb-item active">User</li>
+                            <li class="breadcrumb-item"><a href="admin">Dashboard</a></li>
+                            <li class="breadcrumb-item active">Administrator</li>
                         </ol>
                     </div>
                 </div>
@@ -41,7 +34,7 @@
         </section>
 
         <!-- Main content -->
-        {{-- <section class="content">
+        <section class="content">
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-12">
@@ -73,10 +66,10 @@
                     </div>
                 </div>
             </div>
-        </section> --}}
+        </section>
     </div>
 
-    {{-- <!-- ADD MODAL START -->
+    <!-- ADD MODAL START -->
     <div class="modal fade" id="modalAddUser">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -249,7 +242,7 @@
                 </form>
             </div>
         </div>
-    </div><!-- UPLOAD PDF MODAL END --> --}}
+    </div><!-- UPLOAD PDF MODAL END -->
     @endsection
 
 <!--     {{-- JS CONTENT --}} -->
@@ -269,8 +262,6 @@
                 theme: 'bootstrap4'
             });
 
-            /*let dt_users = $('#tblUsers').DataTable();*/
-
             $(document).on('click','#tblUsers tbody tr',function(e){
                 $(this).closest('tbody').find('tr').removeClass('table-active');
                 $(this).closest('tr').addClass('table-active');
@@ -282,47 +273,22 @@
             // then the controller will handle that uri to use specific method called get_user_levels() inside UserLevelController
             GetUserLevel($(".selectUserLevel"));
 
-            // dataTableUsers = $("#tblUsers").DataTable({
-            //     "processing" : false,
-            //     "serverSide" : true,
-            //     "ajax" : {
-            //         url: "view_users", // this will be pass in the uri called view_users that handled datatables inside view_users() method under UserController
-            //     },
-                
-            //     "columns":[
-            //         { "data" : "id" },
-            //         { "data" : "name" },
-            //         { "data" : "username" },
-            //         { "data" : "email" },
-            //         { "data" : "user_level.name" },
-            //         { "data" : "label1" },
-            //         { "data" : "action1", orderable:false, searchable:false }
-            //     ],
-
-            //     "columnDefs": [ 
-            //         {
-            //         "targets": [3, 5],
-            //         "data": null,
-            //         "defaultContent": "N/A"
-            //         },
-            //         { "visible": false, "targets": 1 }
-            //     ],
-            //     "order": [[ 1, "asc" ]],
-            //     "initComplete": function(settings, json) {
-            //             $(".chkUser").each(function(index){
-            //                 if(arrSelectedUsers.includes($(this).attr('user-id'))){
-            //                     $(this).attr('checked', 'checked');
-            //                 }
-            //             });
-            //     },
-            //     "drawCallback": function( settings ) {
-            //             $(".chkUser").each(function(index){
-            //                 if(arrSelectedUsers.includes($(this).attr('user-id'))){
-            //                     $(this).attr('checked', 'checked');
-            //                 }
-            //             });
-            //         }
-            // }); // USERS DATATABLES END
+            dataTableUsers = $("#tblUsers").DataTable({
+                "processing" : false,
+                "serverSide" : true,
+                "ajax" : {
+                    url: "view_users", // this will be pass in the uri called view_users that handled datatables inside view_users() method under UserController
+                },
+                "columns":[
+                    { "data" : "id" },
+                    { "data" : "name" },
+                    { "data" : "position" },
+                    { "data" : "username" },
+                    { "data" : "user_level.name" },
+                    { "data" : "status" },
+                    { "data" : "action", orderable:false, searchable:false }
+                ],
+            }); // USERS DATATABLES END
 
             
             // ADD USER 

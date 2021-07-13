@@ -1,16 +1,18 @@
-{{-- @auth --}}
-    {{-- @if(Auth::user()->is_password_changed == 0)
+@auth
+    {{-- If user password is not change then redirect to change_pass_view and don't allow to access the dashboard --}}
+    @if(Auth::user()->is_password_changed == 0)
         <script type="text/javascript">
-        window.location = "{{ url('change_pass_view') }}";
+            window.location = "{{ url('change_pass_view') }}";
         </script>
     @endif
     
-    // 1-active 2-inactive
+    {{-- 1-active 2-inactive --}}
+    {{-- If the user is inactive then return to login(index view) --}}
     @if(Auth::user()->status == 2) 
         <script type="text/javascript">
-        window.location = "{{ url('login') }}";
+            window.location = "/";
         </script>
-    @endif --}}
+    @endif
 
     <!DOCTYPE html>
     <html>
@@ -38,9 +40,8 @@
             {{-- @include('shared.pages.common') --}}
         </body>
     </html>
-
-{{-- @else
+@else
     <script type="text/javascript">
-        // window.location = "{{ url('login') }}";
+        window.location = "/";
     </script>
-@endauth --}}
+@endauth

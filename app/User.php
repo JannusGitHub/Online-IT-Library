@@ -1,7 +1,7 @@
 <?php
 
 namespace App;
-
+use App\UserLevel;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'position', 'username', 'user_level_id',
     ];
 
     /**
@@ -36,4 +36,10 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    protected $table = 'users';
+
+    public function user_level(){
+        return $this->hasOne(UserLevel::class, 'id', 'user_level_id'); 
+    }
 }

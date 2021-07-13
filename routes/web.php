@@ -1,5 +1,5 @@
 <?php
-
+use Illuminate\Support\Facades\Auth;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -12,13 +12,32 @@
 */
 
 Route::get('/', function () {
+    return view('index');
+})->name('login')->middleware('PreventBackHistory');
+
+Route::get('/user', function () {
     return view('user');
 })->name('user');
+
+Route::get('/change_pass_view', function () {
+    return view('change_password');
+});
+
+Route::get('/admin', function () {
+    return view('admin');
+})->name('admin');
+
+// Route::group(['middleware' => 'PreventBackHistory'], function(){
+// 	Auth::routes();
+// 	Route::get('/', function () {
+//         return view('index');
+//     })->name('login');
+// });
 
 // USER CONTROLLER
 Route::post('/sign_in', 'UserController@sign_in')->name('sign_in');
 Route::post('/sign_out', 'UserController@sign_out')->name('sign_out');
-Route::post('/add_user', 'UserController@add_user');
+Route::post('/add_user', 'UserController@add_user')->name('add_user');
 Route::post('/edit_user', 'UserController@edit_user');
 Route::post('/change_pass', 'UserController@change_pass')->name('change_pass');
 Route::post('/reset_password', 'UserController@reset_password');
@@ -26,6 +45,7 @@ Route::post('/change_user_stat', 'UserController@change_user_stat')->name('chang
 Route::get('/view_users', 'UserController@view_users');
 Route::get('/get_user_by_id', 'UserController@get_user_by_id');
 Route::get('/get_user_by_stat', 'UserController@get_user_by_stat');
+Route::get('/get_user_levels', 'UserLevelController@get_user_levels');
 // Route::get('/get_user_list', 'UserController@get_user_list');
 // Route::get('/get_user_by_batch', 'UserController@get_user_by_batch');
 // Route::get('/generate_user_qrcode', 'UserController@generate_user_qrcode');

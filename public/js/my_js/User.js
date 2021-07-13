@@ -1,4 +1,4 @@
-// Add User
+//============================== ADD USER ==============================
 function AddUser(){
     toastr.options = {
         "closeButton": false,
@@ -27,88 +27,50 @@ function AddUser(){
             $("#iBtnAddUserIcon").addClass('fa fa-spinner fa-pulse');
             $("#btnAddUser").prop('disabled', 'disabled');
         },
-        success: function(JsonObject){
-            if(JsonObject['result'] == 1){
-            	$("#modalAddUser").modal('hide');
-            	$("#formAddUser")[0].reset();
-                $("#selAddUserLevel").select2('val', '0');
-                $("#txtAddUserEmail").removeAttr('disabled');
-                $("#txtAddUserOQCStamp").prop('disabled', 'disabled');
-                $("#chkAddUserSendEmail").removeAttr('disabled');
-                $("#chkAddUserSendEmail").prop('checked', 'checked');
-                $("#chkAddUserWithEmail").prop('checked', 'checked');
-
-            	dataTableUsers.draw();
-                toastr.success('User was succesfully saved!');
-
-                if(JsonObject['has_email'] == 0){
-                    toastr.options = {
-                        "closeButton": true,
-                        "debug": false,
-                        "newestOnTop": true,
-                        "progressBar": true,
-                        "positionClass": "toast-top-right",
-                        "preventDuplicates": false,
-                        "showDuration": "0",
-                        "hideDuration": "0",
-                        "timeOut": "0",
-                        "extendedTimeOut": "0",
-                        "showEasing": "swing",
-                        "hideEasing": "linear",
-                        "showMethod": "fadeIn",
-                        "hideMethod": "fadeOut",
-                        "tapToDismiss": false
-                    };
-
-                }
-            }
-            else{
+        success: function(response){
+            if(response['validation'] == 'hasError'){
                 toastr.error('Saving User Failed!');
-
-                if(JsonObject['error']['name'] === undefined){
+                if(response['error']['name'] === undefined){
                     $("#txtAddUserName").removeClass('is-invalid');
                     $("#txtAddUserName").attr('title', '');
                 }
                 else{
                     $("#txtAddUserName").addClass('is-invalid');
-                    $("#txtAddUserName").attr('title', JsonObject['error']['name']);
+                    $("#txtAddUserName").attr('title', response['error']['name']);
                 }
 
-                if(JsonObject['error']['username'] === undefined){
+                if(response['error']['position'] === undefined){
+                    $("#txtAddUserPosition").removeClass('is-invalid');
+                    $("#txtAddUserPosition").attr('title', '');
+                }
+                else{
+                    $("#txtAddUserPosition").addClass('is-invalid');
+                    $("#txtAddUserPosition").attr('title', response['error']['username']);
+                }
+
+                if(response['error']['username'] === undefined){
                     $("#txtAddUserUserName").removeClass('is-invalid');
                     $("#txtAddUserUserName").attr('title', '');
                 }
                 else{
                     $("#txtAddUserUserName").addClass('is-invalid');
-                    $("#txtAddUserUserName").attr('title', JsonObject['error']['username']);
+                    $("#txtAddUserUserName").attr('title', response['error']['username']);
                 }
 
-                if(JsonObject['error']['employee_id'] === undefined){
-                    $("#txtAddUserEmpId").removeClass('is-invalid');
-                    $("#txtAddUserEmpId").attr('title', '');
-                }
-                else{
-                    $("#txtAddUserEmpId").addClass('is-invalid');
-                    $("#txtAddUserEmpId").attr('title', JsonObject['error']['employee_id']);
-                }
-
-                if(JsonObject['error']['user_level_id'] === undefined){
+                if(response['error']['user_level_id'] === undefined){
                     $("#selAddUserLevel").removeClass('is-invalid');
                     $("#selAddUserLevel").attr('title', '');
                 }
                 else{
                     $("#selAddUserLevel").addClass('is-invalid');
-                    $("#selAddUserLevel").attr('title', JsonObject['error']['user_level_id']);
+                    $("#selAddUserLevel").attr('title', response['error']['user_level_id']);
                 }
-
-                if(JsonObject['error']['email'] === undefined){
-                    $("#txtAddUserEmail").removeClass('is-invalid');
-                    $("#txtAddUserEmail").attr('title', '');
-                }
-                else{
-                    $("#txtAddUserEmail").addClass('is-invalid');
-                    $("#txtAddUserEmail").attr('title', JsonObject['error']['email']);
-                }
+            }else if(response['result'] == 1){
+                $("#modalAddUser").modal('hide');
+                $("#formAddUser")[0].reset();
+                $("#selAddUserLevel").select2('val', '0');
+                toastr.success('User was succesfully saved!');
+                dataTableUsers.draw(); // reload the tables after insertion
             }
 
             $("#iBtnAddUserIcon").removeClass('fa fa-spinner fa-pulse');
@@ -124,7 +86,7 @@ function AddUser(){
     });
 }
 
-// Edit User
+//============================== EDIT USER BY ID TO EDIT ==============================
 function GetUserByIdToEdit(userId){
     toastr.options = {
         "closeButton": false,
@@ -203,6 +165,7 @@ function GetUserByIdToEdit(userId){
     });
 }
 
+//============================== EDIT USER ==============================
 function EditUser(){
     toastr.options = {
         "closeButton": false,
@@ -262,8 +225,6 @@ function EditUser(){
                         "hideMethod": "fadeOut",
                         "tapToDismiss": false
                     };
-
-                    // toastr.info("<center><b>USER INFO</b></center> " + "<b>Username: </b> " + JsonObject['username']  + "<br>" + "<b>Password: </b> " + JsonObject['password']);
                 }
             }
             else{
@@ -328,117 +289,7 @@ function EditUser(){
     });
 }
 
-function PrintBatchUser(selectedUsers){
-  // console.log(selectedUsers);
-    toastr.options = {
-        "closeButton": false,
-        "debug": false,
-        "newestOnTop": true,
-        "progressBar": true,
-        "positionClass": "toast-top-right",
-        "preventDuplicates": false,
-        "onclick": null,
-        "showDuration": "300",
-        "hideDuration": "3000",
-        "timeOut": "3000",
-        "extendedTimeOut": "3000",
-        "showEasing": "swing",
-        "hideEasing": "linear",
-        "showMethod": "fadeIn",
-        "hideMethod": "fadeOut",
-    };
-
-    $.ajax({
-        url: "get_user_by_batch",
-        method: "get",
-        data: {
-            user_id: selectedUsers
-        },
-        dataType: "json",
-        beforeSend: function(){
-            // $("#iBtnEditUserIcon").addClass('fa fa-spinner fa-pulse');
-            // $("#btnEditUser").prop('disabled', 'disabled');
-        },
-        success: function(JsonObject){
-            if(JsonObject['users'].length > 0){
-                // dataTableUsers.draw();
-                // toastr.success('Success!');
-                popup = window.open();
-                let content = '';
-                content += '<html>';
-                content += '<head>';
-                    content += '<title></title>';
-                    content += '<link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">';
-                    content += '<script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>';
-                    content += '<script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>';
-                    content += '<style type="text/css">';
-                    content += '.divBorder{';
-                        content += 'border: 2px solid black;';
-                            content += 'min-width: 225px;';
-                            content += 'margin-top: 10px;';
-                    content += '}';
-                    content += '</style>';
-                content += '</head>';
-                content += '<body>';
-                    content += '<div class="container-fluid">';
-                    content += '<div class="row">';
-
-                        for(let index = 1; index <= JsonObject['users'].length; index++) {
-                        content += '<div class="col-sm-4">';
-                            content += '<div class="divBorder">';
-                            // content += '<center>';
-                                content += '<table>';
-                                content += '<tr>';
-                                    content += '<td>';
-                                    // content += '<center>';
-                                        content += '<img src="' + JsonObject['qrcode'][index - 1] + '" style="max-width: 120px;">';
-                                    // content += '</center>';
-                                    content += '</td>';
-                                    content += '<td>';
-                                    content += '<label style="text-align: left; font-weight: bold; font-family: Arial; font-size: 18px;">' + JsonObject['users'][index - 1].employee_id + '</label>';
-                                    content += '<br>';
-                                    content += '<label style="text-align: left; font-family: Arial Narrow; font-size: 18px;">' + JsonObject['users'][index - 1].name + '</label>';
-                                    content += '</td>';
-                                content += '</tr>';
-                                content += '</table>';
-                            // content += '</center>';
-                            content += '</div>';
-                        content += '</div>';
-
-                        // if(index % 3 == 0){
-                        //   content += '<div class="col-sm-3">';
-                        //   content += '</div>';
-                        // }
-                        }
-
-                    content += '</div>';
-                    content += '</div>';
-                content += '</body>';
-                content += '</html>';
-                popup.document.write(content);
-                
-                  // popup.focus(); //required for IE
-                  // popup.print();
-                  // popup.close();
-            }
-            else{
-                // toastr.error('Failed!');
-            }
-
-            // $("#iBtnEditUserIcon").removeClass('fa fa-spinner fa-pulse');
-            // $("#btnEditUser").removeAttr('disabled');
-            // $("#iBtnEditUserIcon").addClass('fa fa-check');
-        },
-        error: function(data, xhr, status){
-            toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
-            // $("#iBtnEditUserIcon").removeClass('fa fa-spinner fa-pulse');
-            // $("#btnEditUser").removeAttr('disabled');
-            // $("#iBtnEditUserIcon").addClass('fa fa-check');
-        }
-    });
-}
-
-// Sign In
+//============================== SIGN IN ==============================
 function SignIn(){
     toastr.options = {
         "closeButton": false,
@@ -467,35 +318,48 @@ function SignIn(){
             $("#iBtnSignInIcon").addClass('fa fa-spinner fa-pulse');
             $("#btnSignIn").prop('disabled', 'disabled');
         },
-        success: function(JsonObject){
-            if(JsonObject['result'] == 1){
-                window.location = "dashboard";
-            }
-            else if(JsonObject['result'] == 2){
-                window.location = "change_pass_view";
-            }
-            else{
-                toastr.error('Login Failed!');
-
-                if(JsonObject['error']['username'] === undefined){
+        success: function(response){
+            if(response['validation'] == 'hasError'){
+                if(response['error']['username'] === undefined){
                     $("#txtSignInUsername").removeClass('is-invalid');
                     $("#txtSignInUsername").attr('title', '');
                 }
                 else{
                     $("#txtSignInUsername").addClass('is-invalid');
-                    $("#txtSignInUsername").attr('title', JsonObject['error']['username']);
+                    $("#txtSignInUsername").attr('title', response['error']['username']);
+                    // toastr.error(response['error']['username']);
                 }
 
-                if(JsonObject['error']['password'] === undefined){
-                    $("#txtSignInPass").removeClass('is-invalid');
-                    $("#txtSignInPass").attr('title', '');
+                if(response['error']['password'] === undefined){
+                    $("#txtSignInPassword").removeClass('is-invalid');
+                    $("#txtSignInPassword").attr('title', '');
                 }
                 else{
-                    $("#txtSignInPass").addClass('is-invalid');
-                    $("#txtSignInPass").attr('title', JsonObject['error']['password']);
+                    $("#txtSignInPassword").addClass('is-invalid');
+                    $("#txtSignInPassword").attr('title', response['error']['password']);
+                    // toastr.error(response['error']['password']);
+                }
+            } 
+            else{
+                if(response['result'] == 0){
+                    toastr.error(response['error_message']);
+                    $("#txtSignInUsername").removeClass('is-invalid');
+                    $("#txtSignInUsername").attr('title', '');
+                    $("#txtSignInPassword").removeClass('is-invalid');
+                    $("#txtSignInPassword").attr('title', '');
+                }
+                else {
+                    if(response['status'] == 'inactive'){
+                        toastr.error('Your account is inactive!');
+                    }
+                    else if(response['result'] == 1){
+                        window.location = "user";
+                    }
+                    else if(response['result'] == 2){
+                        window.location = "change_pass_view";
+                    }
                 }
             }
-
             $("#iBtnSignInIcon").removeClass('fa fa-spinner fa-pulse');
             $("#btnSignIn").removeAttr('disabled');
             $("#iBtnSignInIcon").addClass('fa fa-check');
@@ -509,7 +373,7 @@ function SignIn(){
     });
 }
 
-// Sign Out
+//==============================SIGN OUT==============================
 function SignOut(){
     toastr.options = {
         "closeButton": false,
@@ -538,19 +402,19 @@ function SignOut(){
             $("#iBtnSignOutIcon").addClass('fa fa-spinner fa-pulse');
             $("#btnSignOut").prop('disabled', 'disabled');
         },
-        success: function(JsonObject){
+        success: function(response){
             $("#iBtnSignOutIcon").removeClass('fa fa-spinner fa-pulse');
             $("#btnSignOut").removeAttr('disabled');
             $("#iBtnSignOutIcon").addClass('fa fa-check');
-            if(JsonObject['result'] == 1){
-                window.location = "login";
+            if(response['result'] == 1){
+                window.location = "/";
             }
             else{
                 toastr.error('Logout Failed!');
             }
         },
         error: function(data, xhr, status){
-            toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+            // toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
             $("#iBtnSignOutIcon").removeClass('fa fa-spinner fa-pulse');
             $("#btnSignOut").removeAttr('disabled');
             $("#iBtnSignOutIcon").addClass('fa fa-check');
@@ -558,6 +422,7 @@ function SignOut(){
     });
 }
 
+//============================== LOGIN ANOTHER(change_password view) ==============================
 function LoginAnother(){
     toastr.options = {
         "closeButton": false,
@@ -580,18 +445,18 @@ function LoginAnother(){
     $.ajax({
         url: "sign_out",
         method: "post",
-        data: $('#formLoginAnother').serialize(),
+        data: $('#formChangePassword').serialize(),
         dataType: "json",
         beforeSend: function(){
-            // $("#iBtnSignOutIcon").addClass('fa fa-spinner fa-pulse');
-            // $("#btnSignOut").prop('disabled', 'disabled');
+            $("#iBtnSignOutIcon").addClass('fa fa-spinner fa-pulse');
+            $("#btnSignOut").prop('disabled', 'disabled');
         },
-        success: function(JsonObject){
-            // $("#iBtnSignOutIcon").removeClass('fa fa-spinner fa-pulse');
-            // $("#btnSignOut").removeAttr('disabled');
-            // $("#iBtnSignOutIcon").addClass('fa fa-check');
-            if(JsonObject['result'] == 1){
-                window.location = "login";
+        success: function(result){
+            $("#iBtnSignOutIcon").removeClass('fa fa-spinner fa-pulse');
+            $("#btnSignOut").removeAttr('disabled');
+            $("#iBtnSignOutIcon").addClass('fa fa-check');
+            if(result['result'] == 1){
+                window.location = "/";
             }
             else{
                 toastr.error('Logout Failed!');
@@ -599,14 +464,14 @@ function LoginAnother(){
         },
         error: function(data, xhr, status){
             toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
-            // $("#iBtnSignOutIcon").removeClass('fa fa-spinner fa-pulse');
-            // $("#btnSignOut").removeAttr('disabled');
-            // $("#iBtnSignOutIcon").addClass('fa fa-check');
+            $("#iBtnSignOutIcon").removeClass('fa fa-spinner fa-pulse');
+            $("#btnSignOut").removeAttr('disabled');
+            $("#iBtnSignOutIcon").addClass('fa fa-check');
         }
     });
 }
 
-// Change Password
+//============================== CHANGE PASSWORD ==============================
 function ChangePassword(){
     toastr.options = {
         "closeButton": false,
@@ -629,68 +494,57 @@ function ChangePassword(){
     $.ajax({
         url: "change_pass",
         method: "post",
-        data: $('#formChangePass').serialize(),
+        data: $('#formChangePassword').serialize(),
         dataType: "json",
         beforeSend: function(){
             $("#iBtnChangePassIcon").addClass('fa fa-spinner fa-pulse');
             $("#btnChangePass").prop('disabled', 'disabled');
         },
-        success: function(JsonObject){
-            if(JsonObject['result'] == 1){                  
+        success: function(response){
+            if(response['validation'] == 'hasError'){
 
+                if(response['error']['username'] === undefined){
+                    $("#txtChangePasswordUsername").removeClass('is-invalid');
+                    $("#txtChangePasswordUsername").attr('title', '');
+                }
+                else{
+                    $("#txtChangePasswordUsername").addClass('is-invalid');
+                    $("#txtChangePasswordUsername").attr('title', response['error']['username']);
+                }
 
+                if(response['error']['password'] === undefined){
+                    $("#txtChangePasswordPassword").removeClass('is-invalid');
+                    $("#txtChangePasswordPassword").attr('title', '');
+                }
+                else{
+                    $("#txtChangePasswordPassword").addClass('is-invalid');
+                    $("#txtChangePasswordPassword").attr('title', response['error']['password']);
+                }
 
+                if(response['error']['new_password'] === undefined){
+                    $("#txtChangePasswordNewPassword").removeClass('is-invalid');
+                    $("#txtChangePasswordNewPassword").attr('title', '');
+                }
+                else{
+                    $("#txtChangePasswordNewPassword").addClass('is-invalid');
+                    $("#txtChangePasswordNewPassword").attr('title', response['error']['new_password']);
+                }
 
-
-
-
-
-
-
-
-
-
-
-                
-                window.location = "dashboard";
+                if(response['error']['confirm_password'] === undefined){
+                    $("#txtChangePasswordConfirmPassword").removeClass('is-invalid');
+                    $("#txtChangePasswordConfirmPassword").attr('title', '');
+                }
+                else{
+                    $("#txtChangePasswordConfirmPassword").addClass('is-invalid');
+                    $("#txtChangePasswordConfirmPassword").attr('title', response['error']['confirm_password']);
+                }
             }
             else{
-                toastr.error('Changing Password Failed!');
-
-                if(JsonObject['error']['username'] === undefined){
-                    $("#txtChangePassUserName").removeClass('is-invalid');
-                    $("#txtChangePassUserName").attr('title', '');
+                if(response['result'] == 1){
+                    window.location = "user";
                 }
                 else{
-                    $("#txtChangePassUserName").addClass('is-invalid');
-                    $("#txtChangePassUserName").attr('title', JsonObject['error']['username']);
-                }
-
-                if(JsonObject['error']['password'] === undefined){
-                    $("#txtChangePassPass").removeClass('is-invalid');
-                    $("#txtChangePassPass").attr('title', '');
-                }
-                else{
-                    $("#txtChangePassPass").addClass('is-invalid');
-                    $("#txtChangePassPass").attr('title', JsonObject['error']['password']);
-                }
-
-                if(JsonObject['error']['new_password'] === undefined){
-                    $("#txtChangePassNewPass").removeClass('is-invalid');
-                    $("#txtChangePassNewPass").attr('title', '');
-                }
-                else{
-                    $("#txtChangePassNewPass").addClass('is-invalid');
-                    $("#txtChangePassNewPass").attr('title', JsonObject['error']['new_password']);
-                }
-
-                if(JsonObject['error']['confirm_password'] === undefined){
-                    $("#txtChangePassConPass").removeClass('is-invalid');
-                    $("#txtChangePassConPass").attr('title', '');
-                }
-                else{
-                    $("#txtChangePassConPass").addClass('is-invalid');
-                    $("#txtChangePassConPass").attr('title', JsonObject['error']['confirm_password']);
+                    toastr.error(response['error_message']);
                 }
             }
 
@@ -707,7 +561,7 @@ function ChangePassword(){
     });
 }
 
-// Change User Status
+//============================== CHANGE USER STATUS ==============================
 function ChangeUserStatus(){
     toastr.options = {
         "closeButton": false,
@@ -772,7 +626,7 @@ function ChangeUserStatus(){
     });
 }
 
-// Reset User Password
+//============================== RESET USER PASSWORD ==============================
 function ResetUserPass(){
     toastr.options = {
         "closeButton": false,
@@ -846,7 +700,7 @@ function ResetUserPass(){
     });
 }
 
-// Get User By Status
+//============================== GET USER BY STATUS FOR DASHBOARD ==============================
 function CountUserByStatForDashboard(status){
     toastr.options = {
         "closeButton": false,
@@ -891,72 +745,72 @@ function CountUserByStatForDashboard(status){
 }
 
 // Generate User QR Code
-function GenerateUserQRCode(qrcode, action, userId){
-    toastr.options = {
-        "closeButton": false,
-        "debug": false,
-        "newestOnTop": true,
-        "progressBar": true,
-        "positionClass": "toast-top-right",
-        "preventDuplicates": false,
-        "onclick": null,
-        "showDuration": "300",
-        "hideDuration": "3000",
-        "timeOut": "3000",
-        "extendedTimeOut": "3000",
-        "showEasing": "swing",
-        "hideEasing": "linear",
-        "showMethod": "fadeIn",
-        "hideMethod": "fadeOut",
-    };
+// function GenerateUserQRCode(qrcode, action, userId){
+//     toastr.options = {
+//         "closeButton": false,
+//         "debug": false,
+//         "newestOnTop": true,
+//         "progressBar": true,
+//         "positionClass": "toast-top-right",
+//         "preventDuplicates": false,
+//         "onclick": null,
+//         "showDuration": "300",
+//         "hideDuration": "3000",
+//         "timeOut": "3000",
+//         "extendedTimeOut": "3000",
+//         "showEasing": "swing",
+//         "hideEasing": "linear",
+//         "showMethod": "fadeIn",
+//         "hideMethod": "fadeOut",
+//     };
 
-    $.ajax({
-        url: "generate_user_qrcode",
-        method: "get",
-        data: {
-            qrcode: qrcode,
-            action: action,
-            user_id: userId,
-        },
-        dataType: "json",
-        beforeSend: function(){
+//     $.ajax({
+//         url: "generate_user_qrcode",
+//         method: "get",
+//         data: {
+//             qrcode: qrcode,
+//             action: action,
+//             user_id: userId,
+//         },
+//         dataType: "json",
+//         beforeSend: function(){
             
-        },
-        success: function(JsonObject){
-            if(action == 1){
-            if(JsonObject['result'] == '1'){
-                $("#imgAddUserBarcode").attr("src", JsonObject['qrcode']);
-                $("#lblAddUserQRCodeVal").text(qrcode);
-            }
-            else if(JsonObject['result'] == '0'){
-                toastr.error('Generating QR Code Failed!');
-                $("#imgAddUserBarcode").attr("src", JsonObject['qrcode']);
-                $("#lblAddUserQRCodeVal").text('0');
-            }
-            else if(JsonObject['result'] == '2'){
-                toastr.warning('Cannot Generate Duplicate Employee ID!');
-                $("#imgAddUserBarcode").attr("src", JsonObject['qrcode']);
-                $("#lblAddUserQRCodeVal").text('0');
-            }
-            }
-            else if(action == 2){
-            if(JsonObject['result'] == '1'){
-                $("#imgEditUserBarcode").attr("src", JsonObject['qrcode']);
-                $("#lblEditUserQRCodeVal").text(qrcode);
-            }
-            else if(JsonObject['result'] == '0'){
-                toastr.error('Generating QR Code Failed!');
-            }
-            else if(JsonObject['result'] == '2'){
-                toastr.warning('Cannot Generate Duplicate Employee ID!');
-            }
-            }
-        },
-        error: function(data, xhr, status){
-            alert('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
-        }
-    });
-    }
+//         },
+//         success: function(JsonObject){
+//             if(action == 1){
+//             if(JsonObject['result'] == '1'){
+//                 $("#imgAddUserBarcode").attr("src", JsonObject['qrcode']);
+//                 $("#lblAddUserQRCodeVal").text(qrcode);
+//             }
+//             else if(JsonObject['result'] == '0'){
+//                 toastr.error('Generating QR Code Failed!');
+//                 $("#imgAddUserBarcode").attr("src", JsonObject['qrcode']);
+//                 $("#lblAddUserQRCodeVal").text('0');
+//             }
+//             else if(JsonObject['result'] == '2'){
+//                 toastr.warning('Cannot Generate Duplicate Employee ID!');
+//                 $("#imgAddUserBarcode").attr("src", JsonObject['qrcode']);
+//                 $("#lblAddUserQRCodeVal").text('0');
+//             }
+//             }
+//             else if(action == 2){
+//             if(JsonObject['result'] == '1'){
+//                 $("#imgEditUserBarcode").attr("src", JsonObject['qrcode']);
+//                 $("#lblEditUserQRCodeVal").text(qrcode);
+//             }
+//             else if(JsonObject['result'] == '0'){
+//                 toastr.error('Generating QR Code Failed!');
+//             }
+//             else if(JsonObject['result'] == '2'){
+//                 toastr.warning('Cannot Generate Duplicate Employee ID!');
+//             }
+//             }
+//         },
+//         error: function(data, xhr, status){
+//             alert('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+//         }
+//     });
+// }
 
 // function PrintWHMatIssu(){
 //   popup = window.open();
@@ -1011,6 +865,7 @@ function GenerateUserQRCode(qrcode, action, userId){
 //   // popup.close();
 // }
 
+//============================== GET USER LIST ==============================
 function GetUserList(cboElement){
     let result = '<option value="">N/A</option>';
     $.ajax({

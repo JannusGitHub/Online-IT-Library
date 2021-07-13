@@ -7,7 +7,6 @@
             class="brand-image img-circle elevation-3"
             style="opacity: .8">
             {{-- <i class="brand-image elevation-3 mt-2 fas fa-book-reader"></i> --}}
-            
         <span class="brand-text font-weight-light">Online IT Library</span>
     </a>
 
@@ -23,7 +22,7 @@
                     </a>
                 </li>
 
-                <li class="nav-header">USER</li>
+                <li class="nav-header">ADMINISTRATOR</li>
                 <li class="nav-item has-treeview">
                     <a href="" class="nav-link">
                         <i class="nav-icon fa fa-users"></i>
