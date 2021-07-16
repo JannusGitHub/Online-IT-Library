@@ -40,7 +40,7 @@
                     <div class="col-md-12">
                         <div class="card card-primary">
                             <div class="card-header">
-                                <h3 class="card-title">User</h3>
+                                <h3 class="card-title">User Management</h3>
                             </div>
                             <div class="card-body">
                                 <div style="float: right;">                   
@@ -73,9 +73,9 @@
     <div class="modal fade" id="modalAddUser">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header bg-dark">
                     <h4 class="modal-title"><i class="fa fa-user-plus"></i> Add User</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" style="color: #fff;" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -121,9 +121,9 @@
     <div class="modal fade" id="modalEditUser">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header bg-dark">
                     <h4 class="modal-title"><i class="fa fa-user"></i> Edit User</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" style="color: #fff" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -136,6 +136,11 @@
                                 <div class="form-group">
                                 <label>Name</label>
                                     <input type="text" class="form-control" name="name" id="txtEditUserName">
+                                </div>
+
+                                <div class="form-group">
+                                <label>Position</label>
+                                    <input type="text" class="form-control" name="position" id="txtEditUserPosition">
                                 </div>
 
                                 <div class="form-group">
@@ -166,9 +171,9 @@
     <div class="modal fade" id="modalChangeUserStat">
         <div class="modal-dialog">
             <div class="modal-content modal-sm">
-                <div class="modal-header">
+                <div class="modal-header bg-dark">
                     <h4 class="modal-title" id="h4ChangeUserTitle"><i class="fa fa-user"></i> Change Status</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" style="color: #fff" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -192,9 +197,9 @@
     <div class="modal fade" id="modalResetUserPass">
         <div class="modal-dialog">
             <div class="modal-content modal-sm">
-                <div class="modal-header">
+                <div class="modal-header bg-dark">
                     <h4 class="modal-title"><i class="fa fa-user"></i> Reset User Password</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" style="color: #fff" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -217,9 +222,9 @@
     <div class="modal fade" id="modalImportUser">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header bg-dark">
                     <h4 class="modal-title"><i class="fa fa-file-excel"></i>Upload PDF</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" style="color: #fff" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -277,7 +282,7 @@
                 "processing" : false,
                 "serverSide" : true,
                 "ajax" : {
-                    url: "view_users", // this will be pass in the uri called view_users that handled datatables inside view_users() method under UserController
+                    url: "view_users", // this will be pass in the uri called view_users that handles datatables of view_users() method inside UserController
                 },
                 "columns":[
                     { "data" : "id" },
@@ -291,12 +296,12 @@
             }); // USERS DATATABLES END
 
             
-            // ADD USER 
+            ///============================== ADD USER ==============================
             // The AddUser(); function is inside public/js/my_js/User.js
             // after the submission, the ajax request will pass the formAddUser(form) of data(input) in the uri(add_user)
             // then the controller will handle that uri to use specific method called add_user() inside UserController
             $("#formAddUser").submit(function(event){
-                event.preventDefault();
+                event.preventDefault(); // to stop the form submission
                 AddUser();
             });
 
@@ -306,32 +311,28 @@
                 $("#txtAddUserName").attr('title', '');
                 $("#txtAddUserUserName").removeClass('is-invalid');
                 $("#txtAddUserUserName").attr('title', '');
-                $("#txtAddUserEmail").removeClass('is-invalid');
-                $("#txtAddUserEmail").attr('title', '');
-                $("#txtAddUserEmpId").removeClass('is-invalid');
-                $("#txtAddUserEmpId").attr('title', '');
+                $("#txtAddUserPosition").removeClass('is-invalid');
+                $("#txtAddUserPosition").attr('title', '');
                 $("#selAddUserLevel").removeClass('is-invalid');
                 $("#selAddUserLevel").attr('title', '');
                 $("#txtAddUserName").focus();
                 $("#selAddUserLevel").select2('val', '0');
-                $("#txtAddUserEmail").removeAttr('disabled');
-                $("#chkAddUserSendEmail").removeAttr('disabled');
-                $("#chkAddUserSendEmail").prop('checked', 'checked');
-                $("#chkAddUserWithEmail").prop('checked', 'checked');
+                // $("#chkAddUserSendEmail").prop('checked', 'checked');
+                // $("#chkAddUserWithEmail").prop('checked', 'checked');
             });
 
 
-            // EDIT USER
-            // aEditUser is generated by datatables and open the modalEditUser(modal) to collect the id of the specified rows
-            $(document).on('click', '.aEditUser', function(){
+            //============================== EDIT USER ==============================
+            // actionEditUser is generated by datatables and open the modalEditUser(modal) to collect the id of the specified rows
+            $(document).on('click', '.actionEditUser', function(){
                 // the user-id(attr) is inside the datatables of UserController that will be use to collect the user-id
                 let userId = $(this).attr('user-id'); 
                 
-                // after clicking the aEditUser(button) the userId will be pass to the txtEditUserId(input=hidden) and when the form is submitted this will be pass to ajax and collect user-id that will be use to query the user-id in the UserController to update the user
-                $("#txtEditUserId").val(userId); 
+                // after clicking the actionEditUser(button) the userId will be pass to the txtEditUserId(input=hidden) and when the form is submitted this will be pass to ajax and collect user-id that will be use to query the user-id in the UserController to update the user
+                $("#txtEditUserId").val(userId);
                 
-                // COLLECT THE DATA AND PASS TO INPUTS, BASED ON THE CLICKED ROWS
-                // GetUserByIdToEdit() function is inside User.js and pass the userId as an argument in passing the ajax that will be use to query the user-id inside get_user_by_id() method under UserController and pass the fetched user based on that query as $user(variable) to pass the values in the inputs of modalEditUser and also to validate the fetched values, inside GetUserByIdToEdit under User.js
+                // COLLECT THE userId AND PASS TO INPUTS, BASED ON THE CLICKED ROWS
+                // GetUserByIdToEdit() function is inside User.js and pass the userId as an argument when passing the ajax that will be use to query the user-id of get_user_by_id() method inside UserController and pass the fetched user based on that query as $user(variable) to pass the values in the inputs of modalEditUser and also to validate the fetched values, inside GetUserByIdToEdit under User.js
                 GetUserByIdToEdit(userId); 
                 
                 // VALIDATION(errors)
@@ -359,9 +360,9 @@
             });
 
 
-            // CHANGE USER STATUS
+            //============================== CHANGE USER STATUS ==============================
             // aChangeUserStat is generated by datatables and open the modalChangeUserStat(modal) to collect and change the id & status of the specified rows
-            $(document).on('click', '.aChangeUserStat', function(){
+            $(document).on('click', '.actionChangeUserStat', function(){
                 let userStat = $(this).attr('status'); // the status will collect the value (1-active, 2-inactive)
                 let userId = $(this).attr('user-id'); // the user-id(attr) is inside the datatables of UserController that will be use to collect the user-id
 
@@ -387,7 +388,7 @@
             });
 
 
-            // RESET USER PASSWORD
+            //============================== RESET USER PASSWORD ==============================
             // aResetUserPass is generated by datatables to collect the id of the specified rows
             $(document).on('click', '.aResetUserPass', function(){
                 let userId = $(this).attr('user-id');
@@ -403,7 +404,7 @@
             });
 
 
-            // SIGNOUT
+            //============================== SIGN OUT ==============================
             $(document).ready(function(){
                 $("#formSignOut").submit(function(event){
                     event.preventDefault();

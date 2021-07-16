@@ -6,12 +6,14 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+
 use DataTables;
 use App\User;
+use App\UserLevel;
 
 class UserController extends Controller
 {
-    // Sign In
+    //============================== SIGN IN ==============================
     public function sign_in(Request $request){
         $user_data = array(
             'username' => $request->get('username'),
@@ -46,7 +48,7 @@ class UserController extends Controller
     }
 
 
-    // Add User
+    //============================== ADD USER ==============================
     public function add_user(Request $request){
         date_default_timezone_set('Asia/Manila');
 
@@ -100,7 +102,7 @@ class UserController extends Controller
     }
 
 
-    // Change Password
+    //============================== CHANGE PASSWORD ==============================
     public function change_pass(Request $request){        
         date_default_timezone_set('Asia/Manila');
         $user_data = array(
@@ -147,14 +149,14 @@ class UserController extends Controller
     }
 
 
-    // Sign Out
+    //============================== SIGN OUT ==============================
     public function sign_out(Request $request){
         Auth::logout();
         return response()->json(['result' => "1"]);
     }
+    
 
-
-    //View Users
+    //============================== VIEW USERS ==============================
 	public function view_users(){
         $users = User::with([
                     'user_level',
@@ -173,11 +175,105 @@ class UserController extends Controller
                 return $result;
             })
             ->addColumn('action', function($user){
-                $result = "";
-                $result .= '<button class="dropdown-item aEditUser" type="button" user-id="' . $user->id . '" style="padding: 1px 1px; text-align: center;" data-toggle="modal" data-target="#modalEditUser" data-keyboard="false">Edit</button>';
-                return $result;
+                $result = '<center><div class="btn-group">
+                                <button type="button" class="btn btn-primary dropdown-toggle btn-xs" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Action">
+                                    <i class="fa fa-lg fa-users-cog"></i> 
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right">'; // dropdown-menu start
+                if($user->status == 1){
+                    $result .= '<button class="dropdown-item text-center actionEditUser" type="button" user-id="' . $user->id . '" data-toggle="modal" data-target="#modalEditUser" data-keyboard="false">Edit</button>';
+
+                    $result .= '<button class="dropdown-item text-center actionChangeUserStat" type="button" user-id="' . $user->id . '" status="2" data-toggle="modal" data-target="#modalChangeUserStat" data-keyboard="false">Deactivate</button>';
+
+                    $result .= '<button class="dropdown-item text-center aResetUserPass" user-id="' . $user->id . '" type="button"  data-toggle="modal" data-target="#modalResetUserPass" data-keyboard="false">Reset Password</button>';
+                }else{
+                    $result .= '<button class="dropdown-item text-center actionChangeUserStat" type="button" user-id="' . $user->id . '" status="1" data-toggle="modal" data-target="#modalChangeUserStat" data-keyboard="false">Activate</button>';
+
+                }
+                    $result .= '</div>'; // dropdown-menu end
+                    $result .= '</div></center>';
+                    return $result;
             })
-            ->rawColumns(['status', 'action'])
+            ->rawColumns(['status', 'action']) // to format the added columns(status & action) as html format
             ->make(true);
+    }
+
+
+    //============================== GET USER BY ID TO EDIT ==============================
+    public function get_user_by_id(Request $request){
+        $user = User::where('id', $request->user_id)->get(); // get all users where id is equal to the user-id attribute of the dropdown-item of actions dropdown(Edit)
+        return response()->json(['user' => $user]);  // pass the $user(variable) to ajax as a response for retrieving and pass the values on the inputs
+    }
+
+    public function get_user_list(Request $request){
+        $users = User::all();
+        return response()->json(['users' => $users]);
+    }
+
+
+    //============================== EDIT USER ==============================
+    public function edit_user(Request $request){
+        date_default_timezone_set('Asia/Manila');
+
+        $data = $request->all(); // collect all input fields
+
+        $validator = Validator::make($data, [
+            'name' => 'required|string|max:255',
+            'position' => 'required|string|max:255',
+            'username' => 'required|string|max:255',
+            'user_level_id' => 'required|string|max:255',
+        ]);
+
+        if($validator->fails()) {
+            return response()->json(['validation' => 'hasError', 'error' => $validator->messages()]);
+        }
+        else{
+            /* DB::beginTransaction();
+*/
+            try{
+                User::where('id', $request->user_id)
+                ->update([ // The update method expects an array of column and value pairs representing the columns that should be updated.
+                    'name' => $request->name,
+                    'position' => $request->position,
+                    'username' => $request->username,
+                    'user_level_id' => $request->user_level_id,
+                    'updated_at' => date('Y-m-d H:i:s'),
+                ]);
+                
+                /*DB::commit();*/
+                return response()->json(['result' => "1"]);
+            }
+            catch(\Exception $e) {
+                DB::rollback();
+                // throw $e;
+                return response()->json(['result' => "0", 'tryCatchError' => $e]);
+            }
+        }
+    }
+
+
+    //============================== CHANGE USER STAT ==============================
+    public function change_user_stat(Request $request){        
+        date_default_timezone_set('Asia/Manila');
+
+        $data = $request->all(); // collect all input fields
+
+        $validator = Validator::make($data, [
+            'user_id' => 'required',
+            'status' => 'required',
+        ]);
+
+        if($validator->passes()){
+                User::where('id', $request->user_id)
+                    ->update([
+                            'status' => $request->status,
+                            'updated_at' => date('Y-m-d H:i:s'),
+                        ]
+                    );
+                return response()->json(['result' => "1"]);
+        }
+        else{
+            return response()->json(['validation' => "hasError", 'error' => $validator->messages()]);
+        }
     }
 }

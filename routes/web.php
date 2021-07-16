@@ -11,9 +11,16 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
-Route::get('/', function () {
-    return view('index');
-})->name('login')->middleware('PreventBackHistory');
+Route::group(['middleware' => 'PreventBackHistory'], function(){
+	Auth::routes();
+	Route::get('/', function () {
+        return view('index');
+    })->name('login');
+});
+
+// Route::get('/', function () {
+//     return view('index');
+// })->name('login')->middleware('PreventBackHistory');
 
 Route::get('/user', function () {
     return view('user');
@@ -27,12 +34,6 @@ Route::get('/admin', function () {
     return view('admin');
 })->name('admin');
 
-// Route::group(['middleware' => 'PreventBackHistory'], function(){
-// 	Auth::routes();
-// 	Route::get('/', function () {
-//         return view('index');
-//     })->name('login');
-// });
 
 // USER CONTROLLER
 Route::post('/sign_in', 'UserController@sign_in')->name('sign_in');

@@ -14,7 +14,7 @@
     <ul class="navbar-nav ml-auto">
         <li class="nav-item dropdown">
             <a class="nav-link" data-toggle="dropdown" href="#">
-                <i class="far fa-user"></i> 
+                <i class="far fa-user"></i>
                 @auth
                     {{ Auth::user()->name }}
                 @endauth
@@ -33,7 +33,7 @@
     <div class="modal-dialog">
         <div class="modal-content modal-sm">
             <div class="modal-header bg-dark">
-                <h4 class="modal-title" id="h4ChangeUserTitle"><i class="fa fa-user"></i> Logout</h4>
+                <h4 class="modal-title"><i class="fa fa-user"></i> Logout</h4>
                 <button type="button" style="color: #fff" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>

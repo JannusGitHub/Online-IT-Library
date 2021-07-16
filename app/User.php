@@ -39,7 +39,16 @@ class User extends Authenticatable
 
     protected $table = 'users';
 
+    // Inverse Relationship means) 
+    /* the parameter in inverse relationship accepts 3 arguments which is the related model as first param, second param is the id 
+    of related model and last is the FK on this table that you want to refers to, which is the main model(Parent) */
+    // public function user_level(){
+    //     return $this->hasOne(UserLevel::class, 'id', 'user_level_id');
+    // }
+    
+    // first param is the related model and the second param is the FK that you want to reference to, which is the main model(Parent)
+    // what is the FK that you want to reference to the related model? user_level_id
     public function user_level(){
-        return $this->hasOne(UserLevel::class, 'id', 'user_level_id'); 
+        return $this->belongsTo(UserLevel::class, 'user_level_id');
     }
 }

@@ -24,3 +24,5 @@
 <link rel="stylesheet" href="{{ asset('/template/plugins/toastr/toastr.min.css') }}">
 
 <link href="https://emoji-css.afeld.me/emoji.css" rel="stylesheet">
+
+<link href="{{ asset('/css/custom.css') }}" rel="stylesheet">
