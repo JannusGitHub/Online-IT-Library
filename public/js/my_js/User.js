@@ -293,6 +293,10 @@ function SignIn(){
                 else {
                     if(response['status'] == 'inactive'){
                         toastr.error('Your account is inactive!');
+                        $("#txtSignInUsername").removeClass('is-invalid');
+                        $("#txtSignInUsername").attr('title', '');
+                        $("#txtSignInPassword").removeClass('is-invalid');
+                        $("#txtSignInPassword").attr('title', '');
                     }
                     else if(response['result'] == 1){
                         window.location = "user";
@@ -536,12 +540,14 @@ function ChangeUserStatus(){
             $("#btnChangeUserStat").prop('disabled', 'disabled');
         },
         success: function(response){
-            // ON GOING 07-14/2021 - JANNUS
 
             if(response['validation'] == 'hasError'){
                 toastr.error('User activation failed!');
             }else{
                 if(response['result'] == 1){
+                    // check if the value of txtChangeUserStatUserStat is 1, this is use for activation,
+                    // since the default value of txtChangeUserStatUserStat is 2, this is use for deactivation.
+                    // In this case, first is to check if user status is equals to 1 means deactivated, then if you want to activate it then set the user status value to 2(use for deactivation)
                     if($("#txtChangeUserStatUserStat").val() == 1){
                         toastr.success('User activation success!');
                         $("#txtChangeUserStatUserStat").val() == 2;
@@ -555,7 +561,6 @@ function ChangeUserStatus(){
                 $("#formChangeUserStat")[0].reset();
                 dataTableUsers.draw();
             }
-
 
             $("#iBtnChangeUserStatIcon").removeClass('fa fa-spinner fa-pulse');
             $("#btnChangeUserStat").removeAttr('disabled');
@@ -594,52 +599,31 @@ function ResetUserPass(){
     $.ajax({
         url: "reset_password",
         method: "post",
-        data: $('#formResetUserPass').serialize(),
+        data: $('#formResetUserPassword').serialize(),
         dataType: "json",
         beforeSend: function(){
             $("#iBtnResetUserPassIcon").addClass('fa fa-spinner fa-pulse');
             $("#btnResetUserPass").prop('disabled', 'disabled');
         },
-        success: function(JsonObject){
-            if(JsonObject['result'] == 1){
+        success: function(response){
+            if(response['result'] == 1){
                 toastr.success('Reset Password Success!');
             }
             else{
                 toastr.error('Resetting Password Failed!');
             }
             
-            $("#modalResetUserPass").modal('hide');
-            $("#iBtnResetUserPassIcon").removeClass('fa fa-spinner fa-pulse');
-            $("#btnResetUserPass").removeAttr('disabled');
-            $("#iBtnResetUserPassIcon").addClass('fa fa-check');
+            $("#modalResetUserPassword").modal('hide');
+            $("#iBtnResetUserPasswordIcon").removeClass('fa fa-spinner fa-pulse');
+            $("#btnResetUserPassword").removeAttr('disabled');
+            $("#iBtnResetUserPasswordIcon").addClass('fa fa-check');
 
-            if(JsonObject['has_email'] == 0){
-                toastr.options = {
-                    "closeButton": true,
-                    "debug": false,
-                    "newestOnTop": true,
-                    "progressBar": true,
-                    "positionClass": "toast-top-right",
-                    "preventDuplicates": false,
-                    "showDuration": "0",
-                    "hideDuration": "0",
-                    "timeOut": "0",
-                    "extendedTimeOut": "0",
-                    "showEasing": "swing",
-                    "hideEasing": "linear",
-                    "showMethod": "fadeIn",
-                    "hideMethod": "fadeOut",
-                    "tapToDismiss": false
-                };
-
-                // toastr.info("<center><b>USER INFO</b></center> " + "<b>Username: </b> " + JsonObject['user'][0]['username']  + "<br>" + "<b>Password: </b> " + JsonObject['password']);
-            }
         },
         error: function(data, xhr, status){
             toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
-            $("#iBtnResetUserPassIcon").removeClass('fa fa-spinner fa-pulse');
-            $("#btnResetUserPass").removeAttr('disabled');
-            $("#iBtnResetUserPassIcon").addClass('fa fa-check');
+            $("#iBtnResetUserPasswordIcon").removeClass('fa fa-spinner fa-pulse');
+            $("#btnResetUserPassword").removeAttr('disabled');
+            $("#iBtnResetUserPasswordIcon").addClass('fa fa-check');
         }
     });
 }

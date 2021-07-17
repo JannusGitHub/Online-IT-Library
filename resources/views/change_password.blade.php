@@ -68,7 +68,7 @@
 
                     <div class="row">
                         <div class="col-12">
-                            <button type="submit" class="btn btn-primary btn-block" id="btnChangePass"><i class="fa fa-check" id="iBtnChangePassIcon"></i>Change Password</button>
+                            <button type="submit" class="btn btn-dark btn-block" id="btnChangePass"><i class="fa fa-check" id="iBtnChangePassIcon"></i>Change Password</button>
                             <a id="btnLoginAnother" class="btn btn-default btn-block"><i class="fa fa-unlock" id="iBtnChangePassIcon"></i>Sign In</a>
                         </div>
                     </div>

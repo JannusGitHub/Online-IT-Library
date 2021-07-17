@@ -185,7 +185,7 @@ class UserController extends Controller
 
                     $result .= '<button class="dropdown-item text-center actionChangeUserStat" type="button" user-id="' . $user->id . '" status="2" data-toggle="modal" data-target="#modalChangeUserStat" data-keyboard="false">Deactivate</button>';
 
-                    $result .= '<button class="dropdown-item text-center aResetUserPass" user-id="' . $user->id . '" type="button"  data-toggle="modal" data-target="#modalResetUserPass" data-keyboard="false">Reset Password</button>';
+                    $result .= '<button class="dropdown-item text-center actionResetUserPassword" user-id="' . $user->id . '" type="button"  data-toggle="modal" data-target="#modalResetUserPassword" data-keyboard="false">Reset Password</button>';
                 }else{
                     $result .= '<button class="dropdown-item text-center actionChangeUserStat" type="button" user-id="' . $user->id . '" status="1" data-toggle="modal" data-target="#modalChangeUserStat" data-keyboard="false">Activate</button>';
 
@@ -275,5 +275,29 @@ class UserController extends Controller
         else{
             return response()->json(['validation' => "hasError", 'error' => $validator->messages()]);
         }
+    }
+
+
+    //============================== RESET PASSWORD ==============================
+    public function reset_password(Request $request){        
+        date_default_timezone_set('Asia/Manila');
+
+        $password = 'pmi12345';
+
+        try{
+            User::where('id', $request->user_id)
+                ->update([
+                        'is_password_changed' => 0,
+                        'password' => Hash::make($password),
+                        'updated_at' => date('Y-m-d H:i:s'),
+                    ]
+                );
+                return response()->json(['result' => "1"]);
+        }
+        catch(\Exception $e) {
+            DB::rollback();
+            // throw $e;
+            return response()->json(['result' => "0", "tryCatchError" => $e]);
+        } 
     }
 }
