@@ -21,12 +21,12 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Administrator</h1>
+                        <h1>User Management</h1>
                     </div>
                     <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="admin">Dashboard</a></li>
-                            <li class="breadcrumb-item active">Administrator</li>
+                            <li class="breadcrumb-item active">User Management</li>
                         </ol>
                     </div>
                 </div>
@@ -250,7 +250,7 @@
     </div><!-- UPLOAD PDF MODAL END -->
     @endsection
 
-<!--     {{-- JS CONTENT --}} -->
+    <!--     {{-- JS CONTENT --}} -->
     @section('js_content')
     
     <script type="text/javascript">
@@ -321,8 +321,6 @@
                 $("#selAddUserLevel").attr('title', '');
                 $("#txtAddUserName").focus();
                 $("#selAddUserLevel").select2('val', '0');
-                // $("#chkAddUserSendEmail").prop('checked', 'checked');
-                // $("#chkAddUserWithEmail").prop('checked', 'checked');
             });
 
 

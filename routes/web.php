@@ -34,6 +34,10 @@ Route::get('/admin', function () {
     return view('admin');
 })->name('admin');
 
+Route::get('/list_of_workloads', function () {
+    return view('list_of_workloads');
+})->name('list_of_workloads');
+
 
 // USER CONTROLLER
 Route::post('/sign_in', 'UserController@sign_in')->name('sign_in');
@@ -51,3 +55,8 @@ Route::get('/get_user_levels', 'UserLevelController@get_user_levels');
 // Route::get('/get_user_by_batch', 'UserController@get_user_by_batch');
 // Route::get('/generate_user_qrcode', 'UserController@generate_user_qrcode');
 // Route::post('/import_user', 'UserController@import_user');
+
+
+// WORKLOAD CONTROLLER
+Route::post('/add_workload', 'WorkloadController@add_workload')->name('add_workload');
+Route::get('/view_workloads', 'WorkloadController@view_workloads');

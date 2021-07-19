@@ -154,7 +154,7 @@ class UserController extends Controller
         Auth::logout();
         return response()->json(['result' => "1"]);
     }
-    
+
 
     //============================== VIEW USERS ==============================
 	public function view_users(){
@@ -282,7 +282,7 @@ class UserController extends Controller
     public function reset_password(Request $request){        
         date_default_timezone_set('Asia/Manila');
 
-        $password = 'pmi12345';
+        $password = 'pmi12345'; // default password
 
         try{
             User::where('id', $request->user_id)

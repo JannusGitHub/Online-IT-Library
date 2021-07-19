@@ -29,3 +29,4 @@
 <!-- Custom JS -->
 <script src="{{ asset('/js/my_js/UserLevel.js') }}"></script>
 <script src="{{ asset('/js/my_js/User.js') }}"></script>
+<script src="{{ asset('/js/my_js/Workload.js') }}"></script>
