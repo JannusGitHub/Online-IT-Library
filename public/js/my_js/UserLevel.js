@@ -10,7 +10,7 @@ function GetUserLevel(cboElement){
         },
         success: function(response){
             result = '';
-            if(response['user_levels'].length > 0){
+            if(response['user_levels'].length > 0){ // true
                 result = '<option value="0" selected disabled> Select User Level </option>';
                 for(let index = 0; index < response['user_levels'].length; index++){
                     result += '<option value="' + response['user_levels'][index].id + '">' + response['user_levels'][index].name + '</option>';

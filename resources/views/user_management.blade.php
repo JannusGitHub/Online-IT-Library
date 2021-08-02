@@ -2,12 +2,19 @@
 @auth
     @php
         if(Auth::user()->user_level_id == 1){
-        $layout = 'layouts.admin_layout';
+            $layout = 'layouts.admin_layout';
         }
         else if(Auth::user()->user_level_id == 2){
-        $layout = 'layouts.user_layout';
+            $layout = 'layouts.user_layout';
         }
     @endphp
+
+    {{-- if user's id is not equal to 1 (Administrator) --}}
+    @if(Auth::user()->user_level_id != 1)
+        <script type="text/javascript">
+            window.location = "user";
+        </script>
+    @endif
 @endauth
 
 @auth
@@ -25,7 +32,7 @@
                     </div>
                     <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="admin">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
                             <li class="breadcrumb-item active">User Management</li>
                         </ol>
                     </div>
@@ -38,29 +45,59 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="card card-primary">
+                        <div class="card">
                             <div class="card-header">
                                 <h3 class="card-title">User Management</h3>
                             </div>
                             <div class="card-body">
-                                <div style="float: right;">                   
-                                    <button class="btn btn-primary" data-toggle="modal" data-target="#modalAddUser" id="btnShowAddUserModal"><i class="fa fa-user-plus"></i> Add User</button>
-                                </div> <br><br>
-                                <div class="table responsive">
-                                    <table id="tblUsers" class="table table-sm table-bordered table-striped table-hover" style="width: 100%;">
-                                        <thead>
-                                            <tr>
-                                            <th>ID</th>
-                                            <th>Name</th>
-                                            <th>Position</th>
-                                            <th>Username</th>
-                                            <th>User Level</th>
-                                            <th>Status</th>
-                                            <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                    </table>
+                                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" id="user-management-tab" data-toggle="tab" href="#user-management" role="tab" aria-controls="user-management" aria-selected="true">User Management Tab</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="archive-tab" data-toggle="tab" href="#archive" role="tab" aria-controls="archive" aria-selected="false">Archive Tab</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content" id="myTabContent">
+                                    <div class="tab-pane fade show active" id="user-management" role="tabpanel" aria-labelledby="user-management-tab">
+                                        <div class="text-right mt-4">                   
+                                            <button class="btn btn-primary" data-toggle="modal" data-target="#modalAddUser" id="btnShowAddUserModal"><i class="fa fa-plus fa-md"></i> New User</button>
+                                        </div><br>
+                                        <div class="table responsive">
+                                            <table id="tblUsers" class="table table-sm table-bordered table-striped table-hover" style="width: 100%;">
+                                                <thead>
+                                                    <tr>
+                                                    <th>ID</th>
+                                                    <th>Name</th>
+                                                    <th>Position</th>
+                                                    <th>Username</th>
+                                                    <th>User Level</th>
+                                                    <th>Status</th>
+                                                    <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="archive" role="tabpanel" aria-labelledby="archive-tab">
+                                        <div class="table responsive mt-5">
+                                            <table id="tblUsersArchive" class="table table-sm table-bordered table-striped table-hover" style="width: 100%;">
+                                                <thead>
+                                                    <tr>
+                                                    <th>ID</th>
+                                                    <th>Name</th>
+                                                    <th>Position</th>
+                                                    <th>Username</th>
+                                                    <th>User Level</th>
+                                                    <th>Status</th>
+                                                    <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
+                                
                             </div>
                         </div>
                     </div>
@@ -167,6 +204,60 @@
         </div>
     </div><!-- EDIT MODAL END -->
 
+    <!-- DELETE MODAL START -->
+    <div class="modal fade" id="modalDeleteUser">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-dark">
+                    <h4 class="modal-title"><i class="fa fa-user"></i> Delete User</h4>
+                    <button type="button" style="color: #fff" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form method="post" id="formDeleteUser">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="row">
+                            <label id="lblDeleteUser" class="text-secondary mt-2">Are you sure you want to delete this user?</label>
+                            <input type="hidden" class="form-control" name="user_id" id="txtDeleteUserId">
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" id="btnDeleteUser" class="btn btn-primary"><i id="iBtnDeleteUserIcon" class="fa fa-check"></i> Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div><!-- DELETE MODAL END -->
+
+    <!-- RESTORE MODAL START -->
+    <div class="modal fade" id="modalRestoreUser">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-dark">
+                    <h4 class="modal-title"><i class="fa fa-user"></i> Restore User</h4>
+                    <button type="button" style="color: #fff" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form method="post" id="formRestoreUser">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="row">
+                            <label id="lblRestoreUser" class="text-secondary mt-2">Are you sure you want to restore this user?</label>
+                            <input type="hidden" class="form-control" name="user_id_for_restore" id="txtRestoreUserId">
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" id="btnRestoreUser" class="btn btn-primary"><i id="iBtnRestoreUserIcon" class="fa fa-check"></i> Restore</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div><!-- RESTORE MODAL END -->
+
     <!-- CHANGE USER STAT MODAL START -->
     <div class="modal fade" id="modalChangeUserStat">
         <div class="modal-dialog">
@@ -272,7 +363,7 @@
                 $(this).closest('tr').addClass('table-active');
             });
 
-            // USERS DATATABLES START
+            //============================== DATATABLES USER ==============================
             // The GetUserLevel(); function is inside public/js/my_js/UserLevel.js
             // this will fetch <option> based on the uri called get_user_levels
             // then the controller will handle that uri to use specific method called get_user_levels() inside UserLevelController
@@ -299,6 +390,29 @@
                 ],
             }); // USERS DATATABLES END
 
+
+            //============================== VIEW USER ARCHIVE DATATABLES ARCHIVE START ==============================
+            dataTableUsersArchive = $("#tblUsersArchive").DataTable({
+                "processing" : false,
+                "serverSide" : true,
+                "language": {
+                    "info": "Showing _START_ to _END_ of _TOTAL_ records",
+                    "lengthMenu":     "Show _MENU_ records",
+                },
+                "ajax" : {
+                    url: "view_users_archive", // this will be pass in the uri called view_users_archive that handles datatables of view_users_archive() method inside UserController
+                },
+                "columns":[
+                    { "data" : "id" },
+                    { "data" : "name" },
+                    { "data" : "position" },
+                    { "data" : "username" },
+                    { "data" : "user_level.name" },
+                    { "data" : "status" },
+                    { "data" : "action", orderable:false, searchable:false }
+                ],
+            }); // VIEW USERS ARCHIVE DATATABLES END
+
             
             ///============================== ADD USER ==============================
             // The AddUser(); function is inside public/js/my_js/User.js
@@ -308,7 +422,6 @@
                 event.preventDefault(); // to stop the form submission
                 AddUser();
             });
-
             // VALIDATION(remove errors)
             $("#btnShowAddUserModal").click(function(){
                 $("#txtAddUserName").removeClass('is-invalid');
@@ -342,17 +455,12 @@
                 $("#txtEditUserName").attr('title', '');
                 $("#txtEditUserUserName").removeClass('is-invalid');
                 $("#txtEditUserUserName").attr('title', '');
-                $("#txtEditUserEmail").removeClass('is-invalid');
-                $("#txtEditUserEmail").attr('title', '');
-                $("#txtEditUserEmpId").removeClass('is-invalid');
-                $("#txtEditUserEmpId").attr('title', '');
                 $("#selEditUserLevel").removeClass('is-invalid');
                 $("#selEditUserLevel").attr('title', '');
                 $("#txtEditUserName").focus();
                 // $("#selEditUserLevel").select2('val', '0');
-                $("#chkEditUserWithEmail").prop('checked', 'checked');
+                // $("#chkEditUserWithEmail").prop('checked', 'checked');
             });
-
             // The EditUser(); function is inside public/js/my_js/User.js
             // after the submission, the ajax request will pass the formEditUser(form) of its data(input) in the uri(edit_user)
             // then the controller will handle that uri to use specific method called edit_user() inside UserController
@@ -362,8 +470,41 @@
             });
 
 
+            //============================== DELETE USER ==============================
+            // actionDeleteUser is generated by datatables and open the modalDeleteUser(modal) to collect the id of the specified rows
+            $(document).on('click', '.actionDeleteUser', function(){
+                // the user-id(attr) is inside the datatables of UserController that will be use to collect the user-id
+                let userId = $(this).attr('user-id'); 
+                
+                // after clicking the actionEditUser(button) the userId will be pass to the txtDeleteUserId(input=hidden) and when the form is submitted this will be pass to ajax and collect user-id that will be use to query the user-id in the UserController to update the user
+                $("#txtDeleteUserId").val(userId);
+            });
+            $("#formDeleteUser").submit(function(event){
+                event.preventDefault();
+                DeleteUser();
+                dataTableUsersArchive.draw();
+            });
+
+
+            //============================== RESTORE USER ==============================
+            // actionRestoreUser is generated by datatables and open the modalRestoreUser(modal) to collect the id of the specified rows
+            $(document).on('click', '.actionRestoreUser', function(){
+                // the user-id(attr) is inside the datatables of UserController that will be use to collect the user-id
+                let userId = $(this).attr('user-id');
+                
+                // after clicking the actionEditUser(button) the userId will be pass to the txtRestoreUserId(input=hidden) and when the form is submitted this will be pass to ajax and collect user-id that will be use to query the user-id in the UserController to update the user
+                $("#txtRestoreUserId").val(userId);
+            });
+            $("#formRestoreUser").submit(function(event){
+                event.preventDefault();
+                RestoreUser();
+                dataTableUsersArchive.draw();
+                dataTableUsers.draw();
+            });
+
+
             //============================== CHANGE USER STATUS ==============================
-            // aChangeUserStat is generated by datatables and open the modalChangeUserStat(modal) to collect and change the id & status of the specified rows
+            // actionChangeUserStat is generated by datatables and open the modalChangeUserStat(modal) to collect and change the id & status of the specified rows
             $(document).on('click', '.actionChangeUserStat', function(){
                 let userStat = $(this).attr('status'); // the status will collect the value (1-active, 2-inactive)
                 let userId = $(this).attr('user-id'); // the user-id(attr) is inside the datatables of UserController that will be use to collect the user-id
@@ -380,7 +521,6 @@
                     $("#h4ChangeUserTitle").html('<i class="fa fa-user"></i> Deactivate User');
                 }
             });
-
             // The ChangeUserStatus(); function is inside public/js/my_js/User.js
             // after the submission, the ajax request will pass the formChangeUserStat(form) of data(input) in the uri(change_user_stat)
             // then the controller will handle that uri to use specific method called change_user_stat() inside UserController
@@ -396,7 +536,6 @@
                 let userId = $(this).attr('user-id');
                 $("#txtResetUserPasswordUserId").val(userId);
             });
-
             // The ResetUserPass(); function is inside public/js/my_js/User.js
             // after the submission, the ajax request will pass the formResetUserPassword(form) of data(input) in the uri(reset_password)
             // then the controller will handle that uri to use specific method called reset_password() inside UserController
@@ -415,34 +554,34 @@
             });
 
 
-            $("#formImportUser").submit(function(event){
-                event.preventDefault();
-                $.ajax({
-                    url: 'import_user',
-                    method: 'post',
-                    data: new FormData(this),
-                    dataType: 'json',
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-                    beforeSend: function(){
-                        // alert('Loading...');
-                    },
-                    success: function(JsonObject){
-                        if(JsonObject['result'] == 1){
-                        toastr.success('Importing Success!');
-                        dataTableUsers.draw();
-                        $("#modalImportUser").modal('hide');
-                        }
-                        else{
-                        toastr.error('Importing Failed!');
-                        }
-                    },
-                    error: function(data, xhr, status){
-                        console.log('Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
-                    }
-                });
-            });
+            // $("#formImportUser").submit(function(event){
+            //     event.preventDefault();
+            //     $.ajax({
+            //         url: 'import_user',
+            //         method: 'post',
+            //         data: new FormData(this),
+            //         dataType: 'json',
+            //         cache: false,
+            //         contentType: false,
+            //         processData: false,
+            //         beforeSend: function(){
+            //             // alert('Loading...');
+            //         },
+            //         success: function(JsonObject){
+            //             if(JsonObject['result'] == 1){
+            //             toastr.success('Importing Success!');
+            //             dataTableUsers.draw();
+            //             $("#modalImportUser").modal('hide');
+            //             }
+            //             else{
+            //             toastr.error('Importing Failed!');
+            //             }
+            //         },
+            //         error: function(data, xhr, status){
+            //             console.log('Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+            //         }
+            //     });
+            // });
 
             
 

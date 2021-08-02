@@ -25,4 +25,7 @@
 
 <link href="https://emoji-css.afeld.me/emoji.css" rel="stylesheet">
 
+{{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pace-js@latest/pace-theme-default.min.css"> --}}
+<link href="{{ asset('/css/flash.css') }}" rel="stylesheet">
+
 <link href="{{ asset('/css/custom.css') }}" rel="stylesheet">

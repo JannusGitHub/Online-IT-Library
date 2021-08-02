@@ -26,6 +26,8 @@
 <!-- Toastr -->
 <script src="{{ asset('/template/plugins/toastr/toastr.min.js') }}"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/pace-js@latest/pace.min.js"></script>
+
 <!-- Custom JS -->
 <script src="{{ asset('/js/my_js/UserLevel.js') }}"></script>
 <script src="{{ asset('/js/my_js/User.js') }}"></script>

@@ -36,17 +36,6 @@
                         <p>List of  Workloads</p>
                     </a>
                 </li> --}}
-                {{-- @if(Auth::user()->position == 4||Auth::user()->position == 5||Auth::user()->position == 1||Auth::user()->position == 2)
-                    <li class="nav-header">PACKING AND SHIPPING</li>
-                    <li class="nav-item">
-                        <a href="{{ route('packingandshippingalias') }}" class="nav-link">
-                        <i class="fa fa-file-excel"></i>
-                        <p>
-                            Packing and Shipping
-                        </p>
-                        </a>
-                    </li>
-                @endif --}}
             </ul>
         </nav>
     </div>

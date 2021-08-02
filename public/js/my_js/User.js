@@ -29,7 +29,7 @@ function AddUser(){
         },
         success: function(response){
             if(response['validation'] == 'hasError'){
-                toastr.error('Saving User Failed!');
+                toastr.error('Saving user failed!');
                 if(response['error']['name'] === undefined){
                     $("#txtAddUserName").removeClass('is-invalid');
                     $("#txtAddUserName").attr('title', '');
@@ -45,7 +45,7 @@ function AddUser(){
                 }
                 else{
                     $("#txtAddUserPosition").addClass('is-invalid');
-                    $("#txtAddUserPosition").attr('title', response['error']['username']);
+                    $("#txtAddUserPosition").attr('title', response['error']['position']);
                 }
 
                 if(response['error']['username'] === undefined){
@@ -169,7 +169,7 @@ function EditUser(){
             if(response['validation'] == 'hasError'){
                 toastr.error('Updating User Failed!');
 
-                if(JsonObject['error']['name'] === undefined){
+                if(response['error']['name'] === undefined){
                     $("#txtEditUserName").removeClass('is-invalid');
                     $("#txtEditUserName").attr('title', '');
                 }
@@ -179,12 +179,12 @@ function EditUser(){
                 }
 
                 if(response['error']['position'] === undefined){
-                    $("#txtEditPosition").removeClass('is-invalid');
-                    $("#txtEditPosition").attr('title', '');
+                    $("#txtEditUserPosition").removeClass('is-invalid');
+                    $("#txtEditUserPosition").attr('title', '');
                 }
                 else{
-                    $("#txtEditPosition").addClass('is-invalid');
-                    $("#txtEditPosition").attr('title', response['error']['name']);
+                    $("#txtEditUserPosition").addClass('is-invalid');
+                    $("#txtEditUserPosition").attr('title', response['error']['position']);
                 }
 
                 if(response['error']['username'] === undefined){
@@ -211,9 +211,10 @@ function EditUser(){
                     $("#selEditUserLevel").select2('val', '0');
     
                     dataTableUsers.draw();
-                    toastr.success('User was succesfully saved!');
+                    toastr.success('User was succesfully updated!');
                 }else{
-                    toastr.warning(response['tryCatchError']);
+                    toastr.warning(response['tryCatchError'] + "<br>" +
+                    'Try Catch Error');
                 }
             }
             
@@ -226,6 +227,115 @@ function EditUser(){
             $("#iBtnEditUserIcon").removeClass('fa fa-spinner fa-pulse');
             $("#btnEditUser").removeAttr('disabled');
             $("#iBtnEditUserIcon").addClass('fa fa-check');
+        }
+    });
+}
+
+
+//============================== DELETE USER ==============================
+function DeleteUser(){
+    toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": true,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "3000",
+        "timeOut": "3000",
+        "extendedTimeOut": "3000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut",
+    };
+
+    $.ajax({
+        url: "delete_user",
+        method: "post",
+        data: $('#formDeleteUser').serialize(),
+        dataType: "json",
+        beforeSend: function(){
+            $("#iBtnDeleteUserIcon").addClass('fa fa-spinner fa-pulse');
+            $("#btnDeleteUser").prop('disabled', 'disabled');
+        },
+        success: function(response){
+            let result = response['result'];
+            if(result == 1){
+                $("#modalDeleteUser").modal('hide');
+                $("#formDeleteUser")[0].reset();
+                dataTableUsers.draw();
+                toastr.success('User successfully deleted');
+            }
+            else{
+                toastr.warning('No user found!');
+            }
+            
+            $("#iBtnDeleteUserIcon").removeClass('fa fa-spinner fa-pulse');
+            $("#btnDeleteUser").removeAttr('disabled');
+            $("#iBtnDeleteUserIcon").addClass('fa fa-check');
+        },
+        error: function(data, xhr, status){
+            toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+            $("#iBtnDeleteUserIcon").removeClass('fa fa-spinner fa-pulse');
+            $("#btnDeleteUser").removeAttr('disabled');
+            $("#iBtnDeleteUserIcon").addClass('fa fa-check');
+        }
+    });
+}
+
+
+//============================== RESTORE USER ==============================
+function RestoreUser(){
+    toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": true,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "3000",
+        "timeOut": "3000",
+        "extendedTimeOut": "3000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut",
+    };
+
+    $.ajax({
+        url: "restore_user",
+        method: "post",
+        data: $('#formRestoreUser').serialize(),
+        dataType: "json",
+        beforeSend: function(){
+            $("#iBtnRestoreUserIcon").addClass('fa fa-spinner fa-pulse');
+            $("#btnRestoreUser").prop('disabled', 'disabled');
+        },
+        success: function(response){
+            let result = response['result'];
+            if(result == 1){
+                $("#modalRestoreUser").modal('hide');
+                $("#formRestoreUser")[0].reset();
+                toastr.success('User successfully restored');
+            }
+            else{
+                toastr.warning('Cannot restore the user');
+            }
+            
+            $("#iBtnRestoreUserIcon").removeClass('fa fa-spinner fa-pulse');
+            $("#btnRestoreUser").removeAttr('disabled');
+            $("#iBtnRestoreUserIcon").addClass('fa fa-check');
+        },
+        error: function(data, xhr, status){
+            toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+            $("#iBtnRestoreUserIcon").removeClass('fa fa-spinner fa-pulse');
+            $("#btnRestoreUser").removeAttr('disabled');
+            $("#iBtnRestoreUserIcon").addClass('fa fa-check');
         }
     });
 }
@@ -291,7 +401,10 @@ function SignIn(){
                     $("#txtSignInPassword").attr('title', '');
                 }
                 else {
-                    if(response['status'] == 'inactive'){
+                    if(response['logdel'] == 'deleted'){
+                        toastr.error('Your account is deleted!');
+                    }
+                    else if(response['status'] == 'inactive'){
                         toastr.error('Your account is inactive!');
                         $("#txtSignInUsername").removeClass('is-invalid');
                         $("#txtSignInUsername").attr('title', '');
@@ -299,7 +412,8 @@ function SignIn(){
                         $("#txtSignInPassword").attr('title', '');
                     }
                     else if(response['result'] == 1){
-                        window.location = "user";
+                        window.location = "dashboard";
+                        // console.log(response['session']);
                     }
                     else if(response['result'] == 2){
                         window.location = "change_pass_view";
@@ -489,7 +603,8 @@ function ChangePassword(){
             }
             else{
                 if(response['result'] == 1){
-                    window.location = "user";
+                    window.location = "dashboard";
+                    console.log(response['session']);
                 }
                 else{
                     toastr.error(response['error_message']);

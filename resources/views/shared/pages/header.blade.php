@@ -38,7 +38,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form method="post" id="formSignOut">
+            <form id="formSignOut">
                 @csrf
                 <div class="modal-body">
                     <label id="lblSignOut" class="text-secondary mt-2">Are you sure to logout your account?</label>

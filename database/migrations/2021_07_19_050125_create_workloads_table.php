@@ -21,7 +21,14 @@ class CreateWorkloadsTable extends Migration
             $table->tinyInteger('status')->comment = '1-done,2-pending';
             $table->string('file')->nullable();
             $table->string('uploaded_date');
+            $table->bigInteger('created_by')->unsigned();
+            $table->bigInteger('last_updated_by')->unsigned();
+            $table->bigInteger('logdel')->nullable()->default(0)->comment = '0-active, 1-deleted';
             $table->timestamps();
+
+            // Foreign Key
+            $table->foreign('created_by')->references('id')->on('users');
+            $table->foreign('last_updated_by')->references('id')->on('users');
         });
     }
 
