@@ -1,8 +1,8 @@
-<footer class="fixed-bottom py-3 px-4 border-top bg-dark">
+<footer class="main-footer">
     <div class="float-right d-none d-sm-block">
         <b id="footerTimer"></b>
     </div>
-    <strong><a class="text-white"href="https://www.pricon.com.ph/index.php/en/" target="_blank">Pricon Microelectronics, Inc.</a></strong>
+    <strong><a href="https://www.pricon.com.ph/index.php/en/" target="_blank">Pricon Microelectronics, Inc.</a></strong>
 </footer>
 
 <script type="text/javascript">

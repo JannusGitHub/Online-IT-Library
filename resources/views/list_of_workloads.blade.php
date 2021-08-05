@@ -286,6 +286,8 @@
                 dataTableWorkloads = $("#tblWorkloads").DataTable({
                     "processing" : false,
                     "serverSide" : true,
+                    "responsive": true,
+                    "scrollX": true,
                     "order": [[ 0, "desc" ],[ 4, "desc" ]],
                     "language": {
                         "info": "Showing _START_ to _END_ of _TOTAL_ records",
@@ -311,6 +313,7 @@
                 dataTableWorkloadsArchive = $("#tblWorkloadsArchive").DataTable({
                     "processing" : false,
                     "serverSide" : true,
+                    "responsive": true,
                     "order": [[ 0, "desc" ],[ 4, "desc" ]],
                     "language": {
                         "info": "Showing _START_ to _END_ of _TOTAL_ records",

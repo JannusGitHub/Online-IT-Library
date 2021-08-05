@@ -1,13 +1,12 @@
 <!-- Navbar -->
-<nav class="navbar navbar-expand navbar-dark border-bottom">
+<nav class="main-header navbar navbar-expand navbar-white navbar-light">
     <!-- Left navbar links -->
-    <ul class="navbar-nav d-flex align-items-center">
+    <ul class="navbar-nav">
         <li class="nav-item">
-            <h3 class="nav-link"><b>ONLINE IT LIBRARY</b></h3>
+            <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
         </li>
-        <span style="margin-top: -8px" class="text-white">|</span>
-        <li class="nav-item d-none d-lg-inline-block">
-            <a class="nav-link text-muted txtWorkInstruction"><h6 style="margin-top: 2px" class="text-white" disabled> Search for a Work Instruction</h6></a>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="" class="nav-link">Online IT Library</a>
         </li>
     </ul>
 

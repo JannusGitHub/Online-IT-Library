@@ -76,3 +76,4 @@ Route::get('/get_workload_by_id', 'WorkloadController@get_workload_by_id');
 Route::get('/view_workloads_user_dashboard', 'WorkloadController@view_workloads_user_dashboard');
 Route::get('/get_total_workloads', 'WorkloadController@get_total_workloads');
 Route::get('/view_workloads_archive', 'WorkloadController@view_workloads_archive');
+Route::get('/get_total_records', 'WorkloadController@get_total_records');

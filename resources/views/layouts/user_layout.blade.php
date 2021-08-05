@@ -27,9 +27,9 @@
         @include('shared.css_links.css_links')
     </head>
         <body class="hold-transition sidebar-mini">
-            <div class="wrapper">
+            <div class="container-fluid px-0">
                 @include('shared.pages.header')
-                @include('shared.pages.user_nav')
+                {{-- @include('shared.pages.user_nav') --}}
                 @yield('content_page')
                 @include('shared.pages.footer')
             </div>

@@ -95,6 +95,15 @@ class WorkloadController extends Controller
     }
 
 
+    //============================== GET TOTAL WORKLOADS FOR DASHBOARD ==============================
+    public function get_total_records(){
+        $records = Workload::where('logdel', 0)->where('status', 1)->get();
+
+        $totalRecords = count($records);
+        return response()->json(['totalRecords' => $totalRecords]);
+    }
+
+
     //============================== VIEW WORKLOADS ==============================
 	public function view_workloads(){
         $workloads = Workload::get()
@@ -113,10 +122,10 @@ class WorkloadController extends Controller
             })
             ->addColumn('file', function($workload){
                 if($workload->file != 'N/A'){
-                    $result =   '<a href="download_attached_document/'. $workload->id . '" title="Click to download file">
-                                    <i text-dark class="fas fa-file-download"> '. $workload->file . '</i>
+                    $result =   '<center><a href="download_attached_document/'. $workload->id . '" title="Click to download file">
+                    <button type="button" class="btn btn-sm btn-primary"><i text-dark class="fas fa-file-download"></i> Download</button>
                                     
-                                </a>';
+                                </a></center>';
                     return $result;
                 }else{
                     return $workload->file;
@@ -305,7 +314,7 @@ class WorkloadController extends Controller
 
     //============================== VIEW WORKLOADS FOR USER DASHBOARD ==============================
 	public function view_workloads_user_dashboard(){
-        $workloads = Workload::where('logdel', 0)
+        $workloads = Workload::where('logdel', 0)->where('status', 1)
                     ->get();
                 
         return DataTables::of($workloads)
@@ -321,10 +330,10 @@ class WorkloadController extends Controller
             })
             ->addColumn('file', function($workload){
                 if($workload->file != 'N/A'){
-                    $result =   '<a href="download_attached_document/'. $workload->id . '" title="Click to download file">
-                                    <i text-dark class="fas fa-file-download"> '. $workload->file . '</i>
+                    $result =   '<center><a href="download_attached_document/'. $workload->id . '" title="Click to download file">
+                                    <button type="button" class="btn btn-sm btn-primary"><i text-dark class="fas fa-file-download"></i> Download</button>
                                     
-                                </a>';
+                                </a></center>';
                     return $result;
                 }else{
                     return $workload->file;
@@ -333,4 +342,7 @@ class WorkloadController extends Controller
             ->rawColumns(['status', 'file']) // to format the added columns(status & file) as html format
             ->make(true);
     }
+
+
+    
 }

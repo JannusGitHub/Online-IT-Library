@@ -36,10 +36,10 @@
     </head>
         <body class="hold-transition sidebar-mini">
             <div class="wrapper">
-                @include('shared.pages.header')
+                @include('shared.pages.admin_header')
                 @include('shared.pages.admin_nav')
                 @yield('content_page')
-                @include('shared.pages.footer')
+                @include('shared.pages.admin_footer')
             </div>
 
             {{-- JS --}}

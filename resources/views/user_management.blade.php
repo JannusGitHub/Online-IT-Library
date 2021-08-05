@@ -372,6 +372,8 @@
             dataTableUsers = $("#tblUsers").DataTable({
                 "processing" : false,
                 "serverSide" : true,
+                "responsive": true,
+                "scrollX": true,
                 "language": {
                     "info": "Showing _START_ to _END_ of _TOTAL_ records",
                     "lengthMenu":     "Show _MENU_ records",
@@ -395,6 +397,7 @@
             dataTableUsersArchive = $("#tblUsersArchive").DataTable({
                 "processing" : false,
                 "serverSide" : true,
+                "responsive": true,
                 "language": {
                     "info": "Showing _START_ to _END_ of _TOTAL_ records",
                     "lengthMenu":     "Show _MENU_ records",
